@@ -1,21 +1,18 @@
-import jwt from 'jsonwebtoken';
-import { config } from '../config/env.js';
+import jwt from "jsonwebtoken";
+import { config } from "../config/env.js";
 
 export function requireAuth(req, res, next) {
-    const token = req.header('Authorization');
-    console.log(token);
+    const [scheme, token] = (req.header("Authorization") ?? "").split(" ");
 
-    if (!token) {
-        return res.status(401).json({ message: "Token absent" })
+    if (scheme !== "Bearer" || !token) {
+        return res.status(401).json({ message: "Token absent" });
     }
-    const tokenClean = token.split(" ")[1];
-    console.log(tokenClean)
+
     try {
-        const verified = jwt.verify(tokenClean, config.jwtSecret);
-        console.log(verified);
-        req.userId = verified;
+        const payload = jwt.verify(token, config.jwtSecret);
+        req.userId = payload._id;
         next();
     } catch {
-        throw Error("Token Invalide");
+        res.status(401).json({ message: "Token invalide" });
     }
 }

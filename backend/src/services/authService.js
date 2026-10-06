@@ -1,24 +1,32 @@
 import bcrypt from 'bcryptjs';
-import { User } from "../models/User.js"
 import jwt from 'jsonwebtoken';
+import { User } from '../models/User.js';
 import { config } from '../config/env.js';
 
-export async function register({ email, password }) {
-    if (await User.exists({ email })) {
-        throw new Error("Email already exists");
-    }
-    const passwordHash = await bcrypt.hash(password, 10)
-    const user = await User.create({ email, passwordHash });
-    return { _id: user._id, email: user.email }
+function httpError(status, message) {
+    return Object.assign(new Error(message), { status });
 }
 
-export async function login({ email, password }) {
-    const user = await User.findOne({ email }).select('+passwordHash');
-    const hashedPassword = user.passwordHash;
-    console.log(user);
-    if (!user || !(await bcrypt.compare(password, hashedPassword))) {
-        throw new Error("Invalid credentials");
+export async function register({ email, password } = {}) {
+    if (!email || !password) {
+        throw httpError(400, 'Email et mot de passe requis');
     }
-    const token = jwt.sign({ _id: user._id }, config.jwtSecret, { expiresIn: "7d" });
-    return { token }
+    if (await User.exists({ email })) {
+        throw httpError(409, 'Email déjà utilisé');
+    }
+    const passwordHash = await bcrypt.hash(password, 10);
+    const user = await User.create({ email, passwordHash });
+    return { _id: user._id, email: user.email };
+}
+
+export async function login({ email, password } = {}) {
+    if (!email || !password) {
+        throw httpError(400, 'Email et mot de passe requis');
+    }
+    const user = await User.findOne({ email }).select('+passwordHash');
+    if (!user || !(await bcrypt.compare(password, user.passwordHash))) {
+        throw httpError(401, 'Identifiants invalides');
+    }
+    const token = jwt.sign({ _id: user._id }, config.jwtSecret, { expiresIn: '7d' });
+    return { token };
 }
