@@ -1,7 +1,7 @@
 :root {
   font-family: Arial, sans-serif;
-  color: #1f2937;
-  background: #f8fafc;
+  color: #222;
+  background: #f5f4ef;
 }
 
 * {
@@ -21,8 +21,21 @@ body {
 .header,
 .footer {
   padding: 1rem clamp(1.25rem, 5vw, 4rem);
-  background: #1e3a5f;
+}
+
+.footer {
+  background: #5c5c5a;
   color: white;
+  padding-block: 3rem;
+  font-weight: 700;
+  font-size: 1.5rem;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
 }
 
 .header p {
@@ -30,12 +43,27 @@ body {
   font-weight: 700;
 }
 
+.logo {
+  background: #d9d9d9;
+  padding: 1.5rem 2rem;
+  font-weight: 700;
+}
+
+.btn-connexion {
+  background: #7cb73b;
+  color: white;
+  border: 0;
+  border-radius: 1.5rem;
+  padding: 1rem 2.5rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
 .content {
   width: min(100% - 2.5rem, 72rem);
   margin: 0 auto;
   flex: 1;
-  display: grid;
-  place-items: center;
 }
 
 .home {
@@ -58,3 +86,35 @@ body {
   text-align: center;
   font-size: 0.875rem;
 }
+
+.habits { padding: 3rem 0; }
+.habits h1 { text-align: center; font-size: clamp(1.75rem, 5vw, 3rem); margin: 0 0 3rem; }
+.habits h1 span { color: #7cb73b; }
+.habits h2 { font-size: 1.1rem; margin: 0 0 2rem; }
+
+.habit-card {
+  background: #d9d9d9;
+  padding: 1.5rem;
+  margin-bottom: 3rem;
+  max-width: 52rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1.5rem 3rem;
+}
+.habit-info { display: flex; flex-direction: column; gap: 1.25rem; min-width: 11rem; }
+.habit-actions { display: flex; gap: 2rem; }
+.habit-actions button, .habit-add {
+  background: none; border: 0; padding: 0; cursor: pointer;
+  font: inherit; font-weight: 700; color: inherit;
+}
+.habit-actions .danger { color: #e8321e; }
+.habit-add { font-size: 1.1rem; }
+
+.habit-days { display: flex; gap: 1rem; flex-wrap: wrap; }
+.day {
+  width: 4rem; height: 3.75rem; border-radius: 50%; border: 0;
+  color: white; font-size: 1.5rem; cursor: pointer;
+}
+.day.done { background: #7cb73b; }
+.day.missed { background: #bf8330; }

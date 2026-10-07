@@ -5,6 +5,7 @@ import { config } from "./config/env.js";
 import { taskRouter } from "./routes/taskRoutes.js";
 import { userRouter } from "./routes/userRoutes.js";
 import { authRouter } from "./routes/authRoutes.js";
+import { habitRouter } from "./routes/habitRoutes.js";
 
 const app = express();
 
@@ -24,13 +25,14 @@ app.get("/api/health", (_request, response) => {
 app.use("/api/tasks", taskRouter);
 app.use("/api/users", userRouter);
 app.use("/api/auth", authRouter);
+app.use("/api/habits", habitRouter);
 
 app.use((_req, res) => {
   res.status(404).json({ message: "Route introuvable" });
 });
 
 app.use((err, _req, res, _next) => {
-  const status = err.status ?? (err.name === "ValidationError" ? 400 : 500);
+  const status = err.status ?? (["ValidationError", "CastError"].includes(err.name) ? 400 : 500);
   if (status === 500) console.error(err);
   res.status(status).json({
     message: status === 500 ? "Erreur serveur" : err.message
