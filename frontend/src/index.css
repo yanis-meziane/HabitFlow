@@ -118,3 +118,8 @@ body {
 }
 .day.done { background: #7cb73b; }
 .day.missed { background: #bf8330; }
+
+.habit-form { display: flex; gap: 1rem; flex-wrap: wrap; }
+.habit-form input { padding: 0.5rem 0.75rem; font: inherit; min-width: 16rem; }
+.habit-form button { background: none; border: 0; font: inherit; font-weight: 700; cursor: pointer; }
+.habit-form button[type="submit"] { color: #7cb73b; }

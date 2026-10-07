@@ -25,14 +25,16 @@ export default function Habits() {
   const toggle = async (h, i) =>
     replace(await api(`/${h._id}`, "PUT", { done: h.done.map((d, j) => (j === i ? !d : d)) }));
 
-  const add = async () => {
-    const name = prompt("Nom de la nouvelle habitude ?")?.trim();
-    if (name) setHabits([...habits, await api("", "POST", { name })]);
-  };
+  const [form, setForm] = useState(null); // null = fermé, sinon { habit?, name }
 
-  const rename = async (h) => {
-    const name = prompt("Nouveau nom ?", h.name)?.trim();
-    if (name) replace(await api(`/${h._id}`, "PUT", { name }));
+  const save = async (e) => {
+    e.preventDefault();
+    const name = form.name.trim();
+    if (name) {
+      if (form.habit) replace(await api(`/${form.habit._id}`, "PUT", { name }));
+      else setHabits([...habits, await api("", "POST", { name })]);
+    }
+    setForm(null);
   };
 
   const remove = async (h) => {
@@ -52,7 +54,7 @@ export default function Habits() {
               <strong>{h.name}</strong>
               <span>{h.frequency}</span>
               <div className="habit-actions">
-                <button type="button" onClick={() => rename(h)}>Modifier</button>
+                <button type="button" onClick={() => setForm({ habit: h, name: h.name })}>Modifier</button>
                 <button type="button" className="danger" onClick={() => remove(h)}>
                   Supprimer
                 </button>
@@ -74,7 +76,24 @@ export default function Habits() {
           </article>
         ))}
 
-        <button type="button" className="habit-add" onClick={add}>+ Ajouter une habitude . . .</button>
+        {form ? (
+          <form className="habit-form" onSubmit={save}>
+            <input
+              autoFocus
+              required
+              maxLength={120}
+              placeholder="Nom de l'habitude..."
+              value={form.name}
+              onChange={(e) => setForm({ ...form, name: e.target.value })}
+            />
+            <button type="submit">{form.habit ? "Enregistrer" : "Ajouter"}</button>
+            <button type="button" onClick={() => setForm(null)}>Annuler</button>
+          </form>
+        ) : (
+          <button type="button" className="habit-add" onClick={() => setForm({ name: "" })}>
+            + Ajouter une habitude . . .
+          </button>
+        )}
       </section>
     </Layout>
   );
