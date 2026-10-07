@@ -6,7 +6,7 @@ import "../css/Calendar.css";
 const WEEKDAYS = ["Lun", "Mar", "Mer", "Jeu", "Ven", "Sam", "Dim"];
 
 export default function Calendar() {
-  const { habits, toggle } = useHabits();
+  const { habits, error, loading, toggle } = useHabits();
   const todayKey = dateKey(new Date());
   const [cursor, setCursor] = useState(() => {
     const d = new Date();
@@ -34,6 +34,8 @@ export default function Calendar() {
     <Layout>
       <section className="calendar-page">
         <h1>Mon <span>calendrier</span></h1>
+        {error && <p className="banner-error" role="alert">{error}</p>}
+        {loading && <p className="state">Chargement…</p>}
 
         <div className="calendar-layout">
           <div className="calendar">
@@ -81,7 +83,7 @@ export default function Calendar() {
                       type="button"
                       className={done ? "done" : ""}
                       aria-pressed={done}
-                      disabled={selected > todayKey}
+                      disabled={selected > todayKey || !h.active}
                       onClick={() => toggle(h, selected)}
                     >
                       <span className="check" aria-hidden="true">{done ? "✓" : ""}</span>

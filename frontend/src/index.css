@@ -261,3 +261,73 @@ body {
   .habit-form { padding: 1.1rem; }
   .habit-form-delete { margin-left: 0; }
 }
+
+/* --- accessibilité : focus clavier visible partout --- */
+a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, summary:focus-visible {
+  outline: 3px solid #7cb73b;
+  outline-offset: 3px;
+}
+
+/* --- états (chargement, vide, erreur) --- */
+.state { color: #62665e; margin: 1.5rem 0; }
+.banner-error {
+  background: #fff0ee; color: #b52c1e; border: 1px solid #f3c1ba;
+  border-radius: 0.5rem; padding: 0.75rem 1rem; margin: 1rem 0;
+}
+
+/* --- habitudes : titre cliquable, inactif, case à cocher --- */
+.habit-title { color: inherit; font-weight: 700; text-decoration: none; }
+.habit-title:hover { text-decoration: underline; }
+.habit-card.inactive { opacity: 0.6; border-left-color: #b9bcb3; }
+.habit-actions { flex-wrap: wrap; row-gap: 0.5rem; }
+.habit-form-check { display: flex; align-items: center; gap: 0.6rem; font-weight: 700; }
+.habit-form .habit-form-check input { width: 1.2rem; min-height: 0; height: 1.2rem; }
+
+/* --- boîte de confirmation --- */
+.confirm {
+  border: 0; border-radius: 1rem; padding: 1.5rem; max-width: 26rem; width: calc(100% - 2rem);
+  box-shadow: 0 1rem 3rem #00000040;
+}
+.confirm::backdrop { background: #22222280; }
+.confirm h3 { margin: 0 0 0.5rem; }
+.confirm p { margin: 0 0 1.25rem; color: #62665e; line-height: 1.5; }
+.confirm-actions { display: flex; justify-content: flex-end; gap: 0.75rem; }
+.confirm-actions button {
+  min-height: 2.75rem; padding: 0.65rem 1.1rem; border: 0; border-radius: 0.5rem;
+  font: inherit; font-weight: 700; cursor: pointer;
+}
+.confirm-cancel { background: #eff0ec; color: #343632; }
+.confirm-ok { background: #e8321e; color: #fff; }
+
+/* --- page détail --- */
+.habit-detail { padding: 2rem 0 3rem; max-width: 40rem; }
+.back-link { color: inherit; font-weight: 700; }
+.detail-card {
+  margin-top: 1.5rem; background: #fff; border-left: 0.5rem solid var(--habit, #7cb73b);
+  border-radius: 0.75rem; padding: 1.5rem; box-shadow: 0 0.5rem 1.5rem #2222220d;
+}
+.detail-card h1 { margin: 0 0 0.5rem; }
+.detail-card h2 { font-size: 1.1rem; margin: 1.5rem 0 0.5rem; }
+.badge { display: inline-block; margin: 0; padding: 0.25rem 0.75rem; border-radius: 1rem; font-weight: 700; font-size: 0.85rem; }
+.badge.on { background: #e9f3dc; color: #426d1d; }
+.badge.off { background: #eff0ec; color: #62665e; }
+.detail-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr)); gap: 1rem; margin: 1.5rem 0 0; }
+.detail-stats dt { color: #62665e; font-size: 0.85rem; }
+.detail-stats dd { margin: 0.2rem 0 0; font-weight: 700; }
+.recent { margin: 0; padding-left: 1.2rem; line-height: 1.7; text-transform: capitalize; }
+.detail-actions { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 1.5rem; }
+.detail-actions button {
+  min-height: 2.75rem; padding: 0.65rem 1rem; border: 0; border-radius: 0.5rem;
+  font: inherit; font-weight: 700; cursor: pointer;
+}
+
+/* --- mobile --- */
+@media (max-width: 600px) {
+  .header { flex-wrap: wrap; justify-content: center; }
+  .logo { width: 4rem; height: 4rem; }
+  .btn-connexion { padding: 0.7rem 1.4rem; font-size: 1rem; }
+  .habit-card { padding: 1rem; gap: 1rem; }
+  .habit-days { gap: 0.4rem; }
+  .day { width: 2.5rem; height: 2.5rem; font-size: 1rem; }
+  .habit-actions { gap: 1rem; }
+}

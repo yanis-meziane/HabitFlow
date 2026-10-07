@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 
 export const COLORS = ["#7cb73b", "#3b82c4", "#e0752d", "#9b5de5", "#e63e6d", "#14a89a"];
 
-const api = async (path = "", method = "GET", body) => {
+export const api = async (path = "", method = "GET", body) => {
   const res = await fetch(`/api/habits${path}`, {
     method,
     headers: { "Content-Type": "application/json", Authorization: `Bearer ${localStorage.getItem("token")}` },
@@ -11,7 +11,7 @@ const api = async (path = "", method = "GET", body) => {
   if (res.status === 401) { localStorage.removeItem("token"); location.href = "/"; }
   if (res.status === 204) return null;
   const data = await res.json();
-  if (!res.ok) throw new Error(data.error?.message ?? "Erreur serveur");
+  if (!res.ok) throw Object.assign(new Error(data.error?.message ?? "Erreur serveur"), { status: res.status });
   return data;
 };
 
@@ -34,6 +34,7 @@ export function streak(habit) {
 export function useHabits() {
   const [habits, setHabits] = useState([]);
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(true);
 
   // exécute une action API ; en cas d'échec, affiche le message au lieu de corrompre la liste
   const guard = (fn) => async (...args) => {
@@ -42,7 +43,7 @@ export function useHabits() {
   };
 
   useEffect(() => {
-    api().then((data) => setHabits(data.items)).catch((e) => setError(e.message));
+    api().then((data) => setHabits(data.items)).catch((e) => setError(e.message)).finally(() => setLoading(false));
   }, []);
 
   const replace = (h) => setHabits((hs) => hs.map((x) => (x.id === h.id ? h : x)));
@@ -50,6 +51,7 @@ export function useHabits() {
   return {
     habits,
     error,
+    loading,
     toggle: guard(async (h, date) => replace(await api(`/${h.id}/toggle`, "POST", { date }))),
     create: guard(async (data) => {
       const h = await api("", "POST", { active: true, ...data });
