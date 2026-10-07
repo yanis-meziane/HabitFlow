@@ -9,8 +9,14 @@ const api = async (path = "", method = "GET", body) => {
     body: body && JSON.stringify(body),
   });
   if (res.status === 401) { localStorage.removeItem("token"); location.href = "/"; }
-  return res.status === 204 ? null : res.json();
+  if (res.status === 204) return null;
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error?.message ?? "Erreur serveur");
+  return data;
 };
+
+// libellés d'affichage des fréquences du contrat API (daily / weekly)
+export const FREQUENCY_LABELS = { daily: "Quotidien", weekly: "Hebdomadaire" };
 
 const pad = (n) => String(n).padStart(2, "0");
 // date locale -> "YYYY-MM-DD" (même format que le back)
@@ -27,21 +33,32 @@ export function streak(habit) {
 
 export function useHabits() {
   const [habits, setHabits] = useState([]);
-  useEffect(() => { api().then((h) => Array.isArray(h) && setHabits(h)); }, []);
+  const [error, setError] = useState("");
 
-  const replace = (h) => setHabits((hs) => hs.map((x) => (x._id === h._id ? h : x)));
+  // exécute une action API ; en cas d'échec, affiche le message au lieu de corrompre la liste
+  const guard = (fn) => async (...args) => {
+    setError("");
+    try { await fn(...args); } catch (e) { setError(e.message); }
+  };
+
+  useEffect(() => {
+    api().then((data) => setHabits(data.items)).catch((e) => setError(e.message));
+  }, []);
+
+  const replace = (h) => setHabits((hs) => hs.map((x) => (x.id === h.id ? h : x)));
 
   return {
     habits,
-    toggle: async (h, date) => replace(await api(`/${h._id}/toggle`, "POST", { date })),
-    create: async (data) => {
-      const h = await api("", "POST", data);
+    error,
+    toggle: guard(async (h, date) => replace(await api(`/${h.id}/toggle`, "POST", { date }))),
+    create: guard(async (data) => {
+      const h = await api("", "POST", { active: true, ...data });
       setHabits((hs) => [...hs, h]);
-    },
-    update: async (h, data) => replace(await api(`/${h._id}`, "PUT", data)),
-    remove: async (h) => {
-      await api(`/${h._id}`, "DELETE");
-      setHabits((hs) => hs.filter((x) => x._id !== h._id));
-    },
+    }),
+    update: guard(async (h, data) => replace(await api(`/${h.id}`, "PATCH", data))),
+    remove: guard(async (h) => {
+      await api(`/${h.id}`, "DELETE");
+      setHabits((hs) => hs.filter((x) => x.id !== h.id));
+    }),
   };
 }

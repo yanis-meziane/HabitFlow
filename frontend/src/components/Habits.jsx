@@ -1,6 +1,6 @@
 import { useState } from "react";
 import Layout from "./Layout.jsx";
-import { COLORS, dateKey, streak, useHabits } from "../habits.js";
+import { COLORS, FREQUENCY_LABELS, dateKey, streak, useHabits } from "../habits.js";
 
 const DAYS = ["L", "M", "M", "J", "V", "S", "D"];
 
@@ -16,7 +16,7 @@ function currentWeek() {
 }
 
 export default function Habits() {
-  const { habits, toggle, create, update, remove } = useHabits();
+  const { habits, error, toggle, create, update, remove } = useHabits();
   const [form, setForm] = useState(null); // null = fermé, sinon { habit?, name, frequency, color }
 
   const now = new Date();
@@ -31,8 +31,8 @@ export default function Habits() {
   const save = async (e) => {
     e.preventDefault();
     const { habit, ...data } = form;
-    data.name = data.name.trim();
-    if (data.name) await (habit ? update(habit, data) : create(data));
+    data.title = data.title.trim();
+    if (data.title) await (habit ? update(habit, data) : create(data));
     setForm(null);
   };
 
@@ -47,6 +47,8 @@ export default function Habits() {
         <h1>Bienvenue sur Habit<span>Lab</span></h1>
         <h2>Aujourd’hui - {today}</h2>
 
+        {error && <p className="error" role="alert">{error}</p>}
+
         {habits.length > 0 && (
           <div className="progress" aria-label={`${doneToday} habitudes sur ${habits.length} faites aujourd’hui`}>
             <div className="progress-text">
@@ -60,15 +62,15 @@ export default function Habits() {
         {habits.map((h) => {
           const n = streak(h);
           return (
-            <article className="habit-card" key={h._id} style={{ "--habit": h.color }}>
+            <article className="habit-card" key={h.id} style={{ "--habit": h.color }}>
               <div className="habit-info">
-                <strong>{h.name}</strong>
-                <span>{h.frequency}</span>
+                <strong>{h.title}</strong>
+                <span>{FREQUENCY_LABELS[h.frequency]}</span>
                 {n > 0 && <span className="streak">🔥 {n} jour{n > 1 && "s"} d’affilée</span>}
                 <div className="habit-actions">
                   <button
                     type="button"
-                    onClick={() => setForm({ habit: h, name: h.name, frequency: h.frequency, color: h.color })}
+                    onClick={() => setForm({ habit: h, title: h.title, frequency: h.frequency, color: h.color })}
                   >
                     Modifier
                   </button>
@@ -114,8 +116,8 @@ export default function Habits() {
                 required
                 maxLength={120}
                 placeholder="Ex. Lire 10 minutes"
-                value={form.name}
-                onChange={(e) => setForm({ ...form, name: e.target.value })}
+                value={form.title}
+                onChange={(e) => setForm({ ...form, title: e.target.value })}
               />
             </label>
 
@@ -125,8 +127,8 @@ export default function Habits() {
                 value={form.frequency}
                 onChange={(e) => setForm({ ...form, frequency: e.target.value })}
               >
-                <option value="Quotidien">Tous les jours</option>
-                <option value="Hebdomadaire">Chaque semaine</option>
+                <option value="daily">Tous les jours</option>
+                <option value="weekly">Chaque semaine</option>
               </select>
             </label>
 
@@ -165,7 +167,7 @@ export default function Habits() {
           <button
             type="button"
             className="habit-add"
-            onClick={() => setForm({ name: "", frequency: "Quotidien", color: COLORS[0] })}
+            onClick={() => setForm({ title: "", frequency: "daily", color: COLORS[0] })}
           >
             <span aria-hidden="true">+</span>
             Ajouter une habitude

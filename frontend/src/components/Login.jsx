@@ -40,7 +40,7 @@ export default function Login() {
     setTimeout(() => navigate('/habits'), 1000);
 }
             } else {
-                setError(data.message || 'Erreur lors de la connexion');
+                setError(data.error?.message || 'Erreur lors de la connexion');
             }
         } catch (err) {
             console.error('Erreur:', err);

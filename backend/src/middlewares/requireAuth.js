@@ -1,18 +1,16 @@
 import jwt from "jsonwebtoken";
 import { config } from "../config/env.js";
+import { unauthorized } from "../errors.js";
 
-export function requireAuth(req, res, next) {
+export function requireAuth(req, _res, next) {
     const [scheme, token] = (req.header("Authorization") ?? "").split(" ");
 
-    if (scheme !== "Bearer" || !token) {
-        return res.status(401).json({ message: "Token absent" });
-    }
+    if (scheme !== "Bearer" || !token) return next(unauthorized("Token absent"));
 
     try {
-        const payload = jwt.verify(token, config.jwtSecret);
-        req.userId = payload._id;
+        req.userId = jwt.verify(token, config.jwtSecret)._id;
         next();
     } catch {
-        res.status(401).json({ message: "Token invalide" });
+        next(unauthorized("Token invalide"));
     }
 }

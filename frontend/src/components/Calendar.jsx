@@ -61,7 +61,7 @@ export default function Calendar() {
                   >
                     <span>{d.getDate()}</span>
                     <span className="dots">
-                      {done.slice(0, 6).map((h) => <i key={h._id} style={{ background: h.color }} />)}
+                      {done.slice(0, 6).map((h) => <i key={h.id} style={{ background: h.color }} />)}
                     </span>
                   </button>
                 );
@@ -76,7 +76,7 @@ export default function Calendar() {
               {habits.map((h) => {
                 const done = h.completions.includes(selected);
                 return (
-                  <li key={h._id} style={{ "--habit": h.color }}>
+                  <li key={h.id} style={{ "--habit": h.color }}>
                     <button
                       type="button"
                       className={done ? "done" : ""}
@@ -85,7 +85,7 @@ export default function Calendar() {
                       onClick={() => toggle(h, selected)}
                     >
                       <span className="check" aria-hidden="true">{done ? "✓" : ""}</span>
-                      {h.name}
+                      {h.title}
                     </button>
                   </li>
                 );

@@ -39,7 +39,7 @@ export default function Register() {
                 setSuccess('Inscription réussie ! Redirection...');
                 setTimeout(() => navigate('/'), 1000);
             } else {
-                setError(data.message || "Erreur lors de l'inscription");
+                setError(data.error?.message || "Erreur lors de l'inscription");
             }
         } catch (err) {
             console.error('Erreur:', err);
