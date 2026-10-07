@@ -37,7 +37,7 @@ export default function Register() {
 
             if (response.ok) {
                 setSuccess('Inscription réussie ! Redirection...');
-                setTimeout(() => navigate('/login'), 1000);
+                setTimeout(() => navigate('/'), 1000);
             } else {
                 setError(data.message || "Erreur lors de l'inscription");
             }
