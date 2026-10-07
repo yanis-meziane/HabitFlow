@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 
 export default function Header() {
   const navigate = useNavigate();
@@ -9,8 +9,11 @@ export default function Header() {
   return (
     <header className="header">
       <div className="logo">LOGO ?</div>
-      <p>Aujourd’hui</p>
-      <button className="btn-connexion" type="button" onClick={logout}>
+      <nav className="navbar" aria-label="Navigation principale">
+        <NavLink to="/habits">Aujourd’hui</NavLink>
+        <NavLink to="/calendar">Calendrier</NavLink>
+      </nav>
+      <button className="btn-connexion btn-logout" type="button" onClick={logout}>
         Déconnexion
       </button>
     </header>

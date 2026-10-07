@@ -1,49 +1,43 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Layout from "./Layout.jsx";
+import { COLORS, dateKey, streak, useHabits } from "../habits.js";
 
 const DAYS = ["L", "M", "M", "J", "V", "S", "D"];
 
-const api = async (path = "", method = "GET", body) => {
-  const res = await fetch(`/api/habits${path}`, {
-    method,
-    headers: { "Content-Type": "application/json", Authorization: `Bearer ${localStorage.getItem("token")}` },
-    body: body && JSON.stringify(body),
+// les 7 jours (lundi → dimanche) de la semaine en cours
+function currentWeek() {
+  const monday = new Date();
+  monday.setDate(monday.getDate() - ((monday.getDay() + 6) % 7));
+  return DAYS.map((_, i) => {
+    const d = new Date(monday);
+    d.setDate(monday.getDate() + i);
+    return d;
   });
-  if (res.status === 401) { localStorage.removeItem("token"); location.href = "/"; }
-  return res.status === 204 ? null : res.json();
-};
+}
 
 export default function Habits() {
-  const [habits, setHabits] = useState([]);
-  useEffect(() => { api().then((h) => Array.isArray(h) && setHabits(h)); }, []);
-  const today = new Date().toLocaleDateString("fr-FR", {
+  const { habits, toggle, create, update, remove } = useHabits();
+  const [form, setForm] = useState(null); // null = fermé, sinon { habit?, name, frequency, color }
+
+  const now = new Date();
+  const todayKey = dateKey(now);
+  const week = currentWeek();
+  const today = now.toLocaleDateString("fr-FR", {
     weekday: "long", day: "2-digit", month: "long", year: "numeric",
   });
-
-  const replace = (h) => setHabits((hs) => hs.map((x) => (x._id === h._id ? h : x)));
-
-  const toggle = async (h, i) =>
-    replace(await api(`/${h._id}`, "PUT", { done: h.done.map((d, j) => (j === i ? !d : d)) }));
-
-  const [form, setForm] = useState(null); // null = fermé, sinon { habit?, name }
+  const doneToday = habits.filter((h) => h.completions.includes(todayKey)).length;
+  const percent = habits.length ? Math.round((doneToday / habits.length) * 100) : 0;
 
   const save = async (e) => {
     e.preventDefault();
-    const name = form.name.trim();
-    if (name) {
-      if (form.habit) {
-        replace(await api(`/${form.habit._id}`, "PUT", { name, frequency: form.frequency }));
-      } else {
-        const created = await api("", "POST", { name, frequency: form.frequency });
-        setHabits((current) => [...current, created]);
-      }
-    }
+    const { habit, ...data } = form;
+    data.name = data.name.trim();
+    if (data.name) await (habit ? update(habit, data) : create(data));
     setForm(null);
   };
 
-  const remove = async (h) => {
-    await api(`/${h._id}`, "DELETE");
-    setHabits((current) => current.filter((x) => x._id !== h._id));
+  const del = async (h) => {
+    await remove(h);
     setForm(null);
   };
 
@@ -53,42 +47,58 @@ export default function Habits() {
         <h1>Bienvenue sur Habit<span>Lab</span></h1>
         <h2>Aujourd’hui - {today}</h2>
 
-        {habits.map((h) => (
-          <article className="habit-card" key={h._id}>
-            <div className="habit-info">
-              <strong>{h.name}</strong>
-              <span>{h.frequency}</span>
-              <div className="habit-actions">
-                <button
-                  type="button"
-                  onClick={() => setForm({
-                    habit: h,
-                    name: h.name,
-                    frequency: h.frequency ?? "Quotidien",
-                  })}
-                >
-                  Modifier
-                </button>
-                <button type="button" className="danger" onClick={() => remove(h)}>
-                  Supprimer
-                </button>
+        {habits.length > 0 && (
+          <div className="progress" aria-label={`${doneToday} habitudes sur ${habits.length} faites aujourd’hui`}>
+            <div className="progress-text">
+              <strong>{doneToday}/{habits.length}</strong> faites aujourd’hui
+              {percent === 100 && " 🎉 Journée parfaite !"}
+            </div>
+            <div className="progress-bar"><div style={{ width: `${percent}%` }} /></div>
+          </div>
+        )}
+
+        {habits.map((h) => {
+          const n = streak(h);
+          return (
+            <article className="habit-card" key={h._id} style={{ "--habit": h.color }}>
+              <div className="habit-info">
+                <strong>{h.name}</strong>
+                <span>{h.frequency}</span>
+                {n > 0 && <span className="streak">🔥 {n} jour{n > 1 && "s"} d’affilée</span>}
+                <div className="habit-actions">
+                  <button
+                    type="button"
+                    onClick={() => setForm({ habit: h, name: h.name, frequency: h.frequency, color: h.color })}
+                  >
+                    Modifier
+                  </button>
+                  <button type="button" className="danger" onClick={() => del(h)}>
+                    Supprimer
+                  </button>
+                </div>
               </div>
-            </div>
-            <div className="habit-days">
-              {DAYS.map((d, i) => (
-                <button
-                  type="button"
-                  key={i}
-                  className={`day ${h.done[i] ? "done" : "missed"}`}
-                  aria-pressed={h.done[i]}
-                  onClick={() => toggle(h, i)}
-                >
-                  {d}
-                </button>
-              ))}
-            </div>
-          </article>
-        ))}
+              <div className="habit-days">
+                {week.map((d, i) => {
+                  const key = dateKey(d);
+                  const done = h.completions.includes(key);
+                  return (
+                    <button
+                      type="button"
+                      key={key}
+                      className={`day ${done ? "done" : "missed"}${key === todayKey ? " today" : ""}`}
+                      aria-pressed={done}
+                      aria-label={d.toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long" })}
+                      disabled={key > todayKey}
+                      onClick={() => toggle(h, key)}
+                    >
+                      {DAYS[i]}
+                    </button>
+                  );
+                })}
+              </div>
+            </article>
+          );
+        })}
 
         {form ? (
           <form className="habit-form" onSubmit={save}>
@@ -120,6 +130,23 @@ export default function Habits() {
               </select>
             </label>
 
+            <fieldset className="habit-form-field color-picker">
+              <legend>Couleur</legend>
+              <div>
+                {COLORS.map((c) => (
+                  <button
+                    type="button"
+                    key={c}
+                    className={c === form.color ? "selected" : ""}
+                    style={{ background: c }}
+                    aria-label={`Couleur ${c}`}
+                    aria-pressed={c === form.color}
+                    onClick={() => setForm({ ...form, color: c })}
+                  />
+                ))}
+              </div>
+            </fieldset>
+
             <div className="habit-form-actions">
               <button className="habit-form-submit" type="submit">
                 {form.habit ? "Enregistrer les changements" : "Ajouter l’habitude"}
@@ -128,7 +155,7 @@ export default function Habits() {
                 Annuler
               </button>
               {form.habit && (
-                <button className="habit-form-delete" type="button" onClick={() => remove(form.habit)}>
+                <button className="habit-form-delete" type="button" onClick={() => del(form.habit)}>
                   Supprimer l’habitude
                 </button>
               )}
@@ -138,7 +165,7 @@ export default function Habits() {
           <button
             type="button"
             className="habit-add"
-            onClick={() => setForm({ name: "", frequency: "Quotidien" })}
+            onClick={() => setForm({ name: "", frequency: "Quotidien", color: COLORS[0] })}
           >
             <span aria-hidden="true">+</span>
             Ajouter une habitude
