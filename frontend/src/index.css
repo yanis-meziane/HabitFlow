@@ -24,11 +24,10 @@ body {
 }
 
 .footer {
-  background: #5c5c5a;
-  color: white;
-  padding-block: 3rem;
-  font-weight: 700;
-  font-size: 1.5rem;
+  margin-top: 3rem;
+  padding: 2.5rem clamp(1.25rem, 5vw, 4rem) 1.25rem;
+  background: #343632;
+  color: #f5f4ef;
 }
 
 .header {
@@ -82,9 +81,50 @@ body {
   line-height: 1.6;
 }
 
-.footer {
-  text-align: center;
-  font-size: 0.875rem;
+.footer-main,
+.footer-bottom {
+  width: min(100%, 72rem);
+  margin-inline: auto;
+}
+
+.footer-main {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 2rem;
+  padding-bottom: 2rem;
+}
+
+.footer-brand {
+  max-width: 23rem;
+}
+
+.footer-brand p {
+  margin: 0.75rem 0 0;
+  color: #d2d4ce;
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+.footer-bottom {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  border-top: 1px solid #555851;
+  padding-top: 1.25rem;
+  color: #d2d4ce;
+  font-size: 0.8rem;
+}
+
+@media (max-width: 600px) {
+  .footer-main,
+  .footer-bottom {
+    flex-direction: column;
+  }
+
+  .footer-main {
+    gap: 1.5rem;
+  }
 }
 
 .habits { padding: 3rem 0; }
