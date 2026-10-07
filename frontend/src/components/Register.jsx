@@ -87,7 +87,7 @@ export default function Register() {
                 <hr className="register-divider" />
                 <p className="register-switch">
                     Vous avez déjà un compte ?{" "}
-                    <button type="button" onClick={() => navigate("/login")}>
+                    <button type="button" onClick={() => navigate("/")}>
                         Connexion
                     </button>
                 </p>

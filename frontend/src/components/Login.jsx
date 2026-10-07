@@ -34,10 +34,11 @@ export default function Login() {
 
             if (response.ok) {
                 // Le backend renvoie { token } : on le stocke pour les requêtes protégées
-                localStorage.setItem('token', data.token);
-
-                setSuccess('Connexion réussie ! Redirection...');
-                setTimeout(() => navigate('/habit'), 1000);
+                if (response.ok) {
+    localStorage.setItem('token', data.token);
+    setSuccess('Connexion réussie ! Redirection...');
+    setTimeout(() => navigate('/habits'), 1000);
+}
             } else {
                 setError(data.message || 'Erreur lors de la connexion');
             }
