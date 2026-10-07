@@ -4,7 +4,7 @@
   const navigate = useNavigate();
   return (
     <section className="home">
-      <h1>Full Stack JS - Projet étudiant</h1>
+      <h1>HabitTask</h1>
        <button onClick={() => navigate("/login")} className="tc-pill-btn" type="button">
           Se connecter</button>
     </section>
