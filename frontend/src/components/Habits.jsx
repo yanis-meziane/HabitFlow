@@ -9,7 +9,7 @@ const api = async (path = "", method = "GET", body) => {
     headers: { "Content-Type": "application/json", Authorization: `Bearer ${localStorage.getItem("token")}` },
     body: body && JSON.stringify(body),
   });
-  if (res.status === 401) { localStorage.removeItem("token"); location.href = "/login"; }
+  if (res.status === 401) { localStorage.removeItem("token"); location.href = "/"; }
   return res.status === 204 ? null : res.json();
 };
 
