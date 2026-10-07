@@ -19,34 +19,33 @@ export default function Register() {
     };
 
     const handleSubmit = async (e) => {
-        e.preventDefault();
-        setError('');
-        setSuccess('');
+    e.preventDefault();
+    setError('');
+    setSuccess('');
 
-        try {
-            const response = await fetch('http://localhost:3001/api/register', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(formData)
-            });
+    try {
+        const response = await fetch('http://localhost:3000/api/auth/register', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                email: formData.mail,
+                password: formData.mdp
+            })
+        });
 
-            const data = await response.json();
+        const data = await response.json();
 
-            if (data.success) {
-                setSuccess('Inscription réussie ! Redirection...');
-                setTimeout(() => {
-                    navigate('/login');
-                }, 1000);
-            } else {
-                setError(data.message || 'Erreur lors de l\'inscription');
-            }
-        } catch (error) {
-            console.error('Erreur:', error);
-            setError('Erreur de connexion au serveur');
+        if (response.ok) {
+            setSuccess('Inscription réussie ! Redirection...');
+            setTimeout(() => navigate('/login'), 1000);
+        } else {
+            setError(data.message || "Erreur lors de l'inscription");
         }
-    };
+    } catch (err) {
+        console.error('Erreur:', err);
+        setError('Erreur de connexion au serveur');
+    }
+};
 
     return (
         <div id="containerRegister">
@@ -58,7 +57,7 @@ export default function Register() {
                         type="email"
                         name="mail"
                         id="mail"
-                        pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{12,}$"
+                        //pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{12,}$"
                         placeholder="Votre mail..."
                         minLength={1}
                         maxLength={30}
@@ -74,7 +73,7 @@ export default function Register() {
                         type="password"
                         name="mdp"
                         id="mdp"
-                        pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{12,}$"
+                       // pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{12,}$"
                         title="Doit contenir au minimum 12 caractères avec 1 majuscule, une minuscule, un caractère spécial et un chiffre"
                         placeholder="Votre mot de passe..."
                         value={formData.mdp}

@@ -1,11 +1,12 @@
-import { useNavigate } from "react-router-dom"; 
+import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import BtnAccueil from "./buttonAccueil";
+import Habits from "./Habits";
 
- export default function Login(){
+export default function Login() {
     const [formData, setFormData] = useState({
-        mail: '',
-        mdp: ''
+        email: '',
+        password: ''
     });
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
@@ -24,7 +25,7 @@ import BtnAccueil from "./buttonAccueil";
         setSuccess('');
 
         try {
-            const response = await fetch('http://localhost:3001/api/login', {
+            const response = await fetch('http://localhost:3000/api/auth/login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -34,66 +35,62 @@ import BtnAccueil from "./buttonAccueil";
 
             const data = await response.json();
 
-            if (data.success) {
-                // Stocker les informations utilisateur
-                localStorage.setItem("type", data.type.trim());
-                localStorage.setItem("userId", data.userId);
+            if (response.ok) {
+                // Le backend renvoie { token } : on le stocke pour les requêtes protégées
+                localStorage.setItem('token', data.token);
 
-                setSuccess('Connexion réussie !');
-
-                setTimeout(() => {
-                    if (data.type === "admin") {
-                        navigate('/admin');
-                    }
-                }, 500);
-
+                setSuccess('Connexion réussie ! Redirection...');
+                setTimeout(() => navigate('/habit'), 1000);
             } else {
                 setError(data.message || 'Erreur lors de la connexion');
             }
 
-        } catch (error) {
-            console.error('Erreur:', error);
+        } catch (err) {
+            console.error('Erreur:', err);
             setError('Erreur de connexion au serveur');
         }
     };
-    return(
+
+    return (
         <div>
             <h1>Je suis la page Login</h1>
 
             <form onSubmit={handleSubmit}>
-                <h2>Connexion</h2> 
-                    <span className="emailLogin">
-                        <label htmlFor="mail">Mail</label>
-                        <input 
-                            type="mail" 
-                            name="mail"
-                            id="mail"
-                            placeholder="Votre mail..."
-                            minLength={1}
-                            maxLength={25}
-                            value={formData.mail}
-                            onChange={handleChange}
-                            required
-                        />
-                    </span>
+                <h2>Connexion</h2>
 
-                    <span className="pwdLogin">
-                        <label htmlFor="mdp">Mot de passe</label>
+                <span className="emailLogin">
+                    <label htmlFor="email">Mail</label>
                     <input
-                        type="password"
-                        name="mdp"
-                        id="mdp"
-                        placeholder="Votre mot de passe..."
-                        value={formData.mdp}
+                        type="email"
+                        name="email"
+                        id="email"
+                        placeholder="Votre mail..."
+                        value={formData.email}
                         onChange={handleChange}
                         required
                     />
-                    </span>
+                </span>
+
+                <span className="pwdLogin">
+                    <label htmlFor="password">Mot de passe</label>
+                    <input
+                        type="password"
+                        name="password"
+                        id="password"
+                        placeholder="Votre mot de passe..."
+                        value={formData.password}
+                        onChange={handleChange}
+                        required
+                    />
+                </span>
+
+                {error && <p className="error">{error}</p>}
+                {success && <p className="success">{success}</p>}
 
                 <input className="submit" type="submit" value="Valider" />
             </form>
 
-            <button onClick={() => navigate("/register")} >S'inscrire</button>
+            <button onClick={() => navigate("/register")}>S'inscrire</button>
             <BtnAccueil />
         </div>
     )
