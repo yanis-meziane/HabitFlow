@@ -104,12 +104,36 @@ body {
 }
 .habit-info { display: flex; flex-direction: column; gap: 1.25rem; min-width: 11rem; }
 .habit-actions { display: flex; gap: 2rem; }
-.habit-actions button, .habit-add {
+.habit-actions button {
   background: none; border: 0; padding: 0; cursor: pointer;
   font: inherit; font-weight: 700; color: inherit;
 }
 .habit-actions .danger { color: #e8321e; }
-.habit-add { font-size: 1.1rem; }
+.habit-actions button:focus-visible,
+.habit-add:focus-visible,
+.habit-form button:focus-visible,
+.habit-form input:focus-visible,
+.habit-form select:focus-visible {
+  outline: 3px solid #7cb73b;
+  outline-offset: 3px;
+}
+
+.habit-add {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  border: 2px dashed #7cb73b;
+  border-radius: 0.75rem;
+  background: #fff;
+  color: #426d1d;
+  padding: 0.9rem 1.25rem;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 150ms ease, transform 150ms ease;
+}
+.habit-add:hover { background: #f0f7e8; transform: translateY(-1px); }
+.habit-add span { font-size: 1.5rem; line-height: 1; }
 
 .habit-days { display: flex; gap: 1rem; flex-wrap: wrap; }
 .day {
@@ -119,7 +143,45 @@ body {
 .day.done { background: #7cb73b; }
 .day.missed { background: #bf8330; }
 
-.habit-form { display: flex; gap: 1rem; flex-wrap: wrap; }
-.habit-form input { padding: 0.5rem 0.75rem; font: inherit; min-width: 16rem; }
-.habit-form button { background: none; border: 0; font: inherit; font-weight: 700; cursor: pointer; }
-.habit-form button[type="submit"] { color: #7cb73b; }
+.habit-form {
+  display: grid;
+  gap: 1.25rem;
+  max-width: 38rem;
+  padding: 1.5rem;
+  border: 1px solid #e0e3d9;
+  border-radius: 1rem;
+  background: #fff;
+  box-shadow: 0 0.5rem 1.5rem #2222220d;
+}
+.habit-form-heading h3 { margin: 0; font-size: 1.25rem; }
+.habit-form-heading p { margin: 0.5rem 0 0; color: #62665e; line-height: 1.5; }
+.habit-form-field { display: grid; gap: 0.5rem; font-weight: 700; }
+.habit-form input,
+.habit-form select {
+  width: 100%;
+  min-height: 2.9rem;
+  padding: 0.7rem 0.8rem;
+  border: 1px solid #c9cdc2;
+  border-radius: 0.5rem;
+  background: white;
+  color: inherit;
+  font: inherit;
+}
+.habit-form-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem; }
+.habit-form-actions button {
+  min-height: 2.75rem;
+  padding: 0.65rem 1rem;
+  border: 0;
+  border-radius: 0.5rem;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+.habit-form-submit { background: #7cb73b; color: white; }
+.habit-form-cancel { background: #eff0ec; color: #343632; }
+.habit-form-delete { margin-left: auto; background: #fff0ee; color: #b52c1e; }
+
+@media (max-width: 600px) {
+  .habit-form { padding: 1.1rem; }
+  .habit-form-delete { margin-left: 0; }
+}
