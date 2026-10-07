@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
-import BtnAccueil from "./buttonAccueil";
+import "../css/Register.css"
 
 export default function Register() {
     const [formData, setFormData] = useState({
@@ -19,75 +19,79 @@ export default function Register() {
     };
 
     const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError('');
-    setSuccess('');
+        e.preventDefault();
+        setError('');
+        setSuccess('');
 
-    try {
-        const response = await fetch('http://localhost:3000/api/auth/register', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                email: formData.mail,
-                password: formData.mdp
-            })
-        });
+        try {
+            const response = await fetch('http://localhost:3000/api/auth/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    email: formData.mail,
+                    password: formData.mdp
+                })
+            });
 
-        const data = await response.json();
+            const data = await response.json();
 
-        if (response.ok) {
-            setSuccess('Inscription réussie ! Redirection...');
-            setTimeout(() => navigate('/login'), 1000);
-        } else {
-            setError(data.message || "Erreur lors de l'inscription");
+            if (response.ok) {
+                setSuccess('Inscription réussie ! Redirection...');
+                setTimeout(() => navigate('/login'), 1000);
+            } else {
+                setError(data.message || "Erreur lors de l'inscription");
+            }
+        } catch (err) {
+            console.error('Erreur:', err);
+            setError('Erreur de connexion au serveur');
         }
-    } catch (err) {
-        console.error('Erreur:', err);
-        setError('Erreur de connexion au serveur');
-    }
-};
+    };
 
     return (
-        <div id="containerRegister">
-            <h1>Je suis la page Register </h1>
-            <form onSubmit={handleSubmit} id="formRegister">
-                <span className="input-span">
-                    <label htmlFor="mail">Mail :</label>
+        <div className="register-page">
+            <form className="register-card" onSubmit={handleSubmit}>
+                <h1 className="register-title">Bienvenue sur HabitLab</h1>
+
+                <div className="register-field">
+                    <label htmlFor="mail">E-mail</label>
                     <input
                         type="email"
                         name="mail"
                         id="mail"
-                        //pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{12,}$"
-                        placeholder="Votre mail..."
-                        minLength={1}
                         maxLength={30}
                         value={formData.mail}
                         onChange={handleChange}
                         required
                     />
-                </span>
+                </div>
 
-                <span className="input-span">
-                    <label htmlFor="mdp">Mot de passe :</label>
+                <div className="register-field">
+                    <label htmlFor="mdp">Mot de passe</label>
                     <input
                         type="password"
                         name="mdp"
                         id="mdp"
-                       // pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{12,}$"
+                        // pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{12,}$"
                         title="Doit contenir au minimum 12 caractères avec 1 majuscule, une minuscule, un caractère spécial et un chiffre"
-                        placeholder="Votre mot de passe..."
                         value={formData.mdp}
                         onChange={handleChange}
                         required
                     />
-                </span>
+                </div>
 
-                {error && <p style={{ color: 'red' }}>{error}</p>}
-                {success && <p style={{ color: 'green' }}>{success}</p>}
+                {error && <p className="register-message register-message--error">{error}</p>}
+                {success && <p className="register-message register-message--success">{success}</p>}
 
-                <input className="submit" type="submit" defaultValue="Valider" />
+                <input className="register-submit" type="submit" value="Valider" />
+
+                <hr className="register-divider" />
+                <p className="register-switch">
+                    Vous avez déjà un compte ?{" "}
+                    <button type="button" onClick={() => navigate("/login")}>
+                        Connexion
+                    </button>
+                </p>
             </form>
-            <BtnAccueil />
         </div>
     );
 }

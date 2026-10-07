@@ -1,0 +1,164 @@
+:root {
+    --register-green: #80bb3a;
+    --register-card: #efefef;
+    --register-field: #cbcbcb;
+    --register-ink: #1e1e1e;
+    --register-error: #b3261e;
+    --register-success: #2f6b0f;
+}
+
+/* Fond vert plein écran, carte centrée */
+.register-page {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+    box-sizing: border-box;
+    background: var(--register-green);
+    font-family: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+    color: var(--register-ink);
+}
+
+.register-card {
+    width: 100%;
+    max-width: 26.5rem;
+    box-sizing: border-box;
+    padding: 1.75rem 2.5rem 2rem;
+    background: var(--register-card);
+    border-radius: 1rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.register-title {
+    margin: 0 0 2rem;
+    font-size: 1.125rem;
+    font-weight: 500;
+    line-height: 1.3;
+}
+
+/* Champ : label au-dessus, input en pilule grise */
+.register-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    margin-bottom: 1.25rem;
+}
+
+.register-field label {
+    font-size: 1rem;
+}
+
+.register-field input {
+    width: 100%;
+    box-sizing: border-box;
+    height: 2.5rem;
+    padding: 0 1rem;
+    border: 2px solid transparent;
+    border-radius: 999px;
+    background: var(--register-field);
+    font: inherit;
+    color: var(--register-ink);
+    transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+
+.register-field input::placeholder {
+    color: #6b6b6b;
+}
+
+.register-field input:focus-visible {
+    outline: none;
+    border-color: var(--register-ink);
+    background: #fff;
+}
+
+/* Messages d'erreur / succès */
+.register-message {
+    margin: 0 0 1rem;
+    font-size: 0.9rem;
+    line-height: 1.4;
+}
+
+.register-message--error {
+    color: var(--register-error);
+}
+
+.register-message--success {
+    color: var(--register-success);
+}
+
+/* Bouton Valider */
+.register-card .register-submit {
+    align-self: stretch;
+    height: 2.75rem;
+    margin-top: 0.5rem;
+    border: none;
+    border-radius: 999px;
+    background: var(--register-ink);
+    color: #fff;
+    font: inherit;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+}
+
+.register-card .register-submit:hover {
+    background: #3a3a3a;
+}
+
+.register-card .register-submit:focus-visible {
+    outline: 3px solid var(--register-green);
+    outline-offset: 2px;
+}
+
+/* Trait de séparation + lien vers l'autre page */
+.register-divider {
+    width: 100%;
+    margin: 1.5rem 0 1rem;
+    border: none;
+    border-top: 1px solid var(--register-ink);
+}
+
+.register-switch {
+    margin: 0;
+    font-size: 1rem;
+}
+
+.register-switch a,
+.register-switch button {
+    padding: 0;
+    border: none;
+    background: none;
+    font: inherit;
+    color: var(--register-ink);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    cursor: pointer;
+}
+
+.register-switch a:hover,
+.register-switch button:hover {
+    text-decoration-thickness: 2px;
+}
+
+.register-switch a:focus-visible,
+.register-switch button:focus-visible {
+    outline: 2px solid var(--register-ink);
+    outline-offset: 3px;
+    border-radius: 2px;
+}
+
+/* Petits écrans */
+@media (max-width: 480px) {
+    .register-card {
+        padding: 1.5rem 1.5rem 1.75rem;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .register-field input,
+    .register-card .register-submit {
+        transition: none;
+    }
+}

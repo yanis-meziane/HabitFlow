@@ -1,0 +1,164 @@
+:root {
+    --login-green: #80bb3a;
+    --login-card: #efefef;
+    --login-field: #cbcbcb;
+    --login-ink: #1e1e1e;
+    --login-error: #b3261e;
+    --login-success: #2f6b0f;
+}
+
+/* Fond vert plein écran, carte centrée */
+.login-page {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+    box-sizing: border-box;
+    background: var(--login-green);
+    font-family: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+    color: var(--login-ink);
+}
+
+.login-card {
+    width: 100%;
+    max-width: 26.5rem;
+    box-sizing: border-box;
+    padding: 1.75rem 2.5rem 2rem;
+    background: var(--login-card);
+    border-radius: 1rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.login-title {
+    margin: 0 0 2rem;
+    font-size: 1.125rem;
+    font-weight: 500;
+    line-height: 1.3;
+}
+
+/* Champ : label au-dessus, input en pilule grise */
+.login-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    margin-bottom: 1.25rem;
+}
+
+.login-field label {
+    font-size: 1rem;
+}
+
+.login-field input {
+    width: 100%;
+    box-sizing: border-box;
+    height: 2.5rem;
+    padding: 0 1rem;
+    border: 2px solid transparent;
+    border-radius: 999px;
+    background: var(--login-field);
+    font: inherit;
+    color: var(--login-ink);
+    transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+
+.login-field input::placeholder {
+    color: #6b6b6b;
+}
+
+.login-field input:focus-visible {
+    outline: none;
+    border-color: var(--login-ink);
+    background: #fff;
+}
+
+/* Messages d'erreur / succès */
+.login-message {
+    margin: 0 0 1rem;
+    font-size: 0.9rem;
+    line-height: 1.4;
+}
+
+.login-message--error {
+    color: var(--login-error);
+}
+
+.login-message--success {
+    color: var(--login-success);
+}
+
+/* Bouton Valider */
+.login-card .login-submit {
+    align-self: stretch;
+    height: 2.75rem;
+    margin-top: 0.5rem;
+    border: none;
+    border-radius: 999px;
+    background: var(--login-ink);
+    color: #fff;
+    font: inherit;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+}
+
+.login-card .login-submit:hover {
+    background: #3a3a3a;
+}
+
+.login-card .login-submit:focus-visible {
+    outline: 3px solid var(--login-green);
+    outline-offset: 2px;
+}
+
+/* Trait de séparation + lien vers l'autre page */
+.login-divider {
+    width: 100%;
+    margin: 1.5rem 0 1rem;
+    border: none;
+    border-top: 1px solid var(--login-ink);
+}
+
+.login-switch {
+    margin: 0;
+    font-size: 1rem;
+}
+
+.login-switch a,
+.login-switch button {
+    padding: 0;
+    border: none;
+    background: none;
+    font: inherit;
+    color: var(--login-ink);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    cursor: pointer;
+}
+
+.login-switch a:hover,
+.login-switch button:hover {
+    text-decoration-thickness: 2px;
+}
+
+.login-switch a:focus-visible,
+.login-switch button:focus-visible {
+    outline: 2px solid var(--login-ink);
+    outline-offset: 3px;
+    border-radius: 2px;
+}
+
+/* Petits écrans */
+@media (max-width: 480px) {
+    .login-card {
+        padding: 1.5rem 1.5rem 1.75rem;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .login-field input,
+    .login-card .login-submit {
+        transition: none;
+    }
+}

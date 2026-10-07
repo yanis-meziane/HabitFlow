@@ -1,7 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
-import BtnAccueil from "./buttonAccueil";
-import Habits from "./Habits";
+import "../css/Login.css";
 
 export default function Login() {
     const [formData, setFormData] = useState({
@@ -27,9 +26,7 @@ export default function Login() {
         try {
             const response = await fetch('http://localhost:3000/api/auth/login', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(formData)
             });
 
@@ -44,7 +41,6 @@ export default function Login() {
             } else {
                 setError(data.message || 'Erreur lors de la connexion');
             }
-
         } catch (err) {
             console.error('Erreur:', err);
             setError('Erreur de connexion au serveur');
@@ -52,46 +48,47 @@ export default function Login() {
     };
 
     return (
-        <div>
-            <h1>Je suis la page Login</h1>
+        <div className="login-page">
+            <form className="login-card" onSubmit={handleSubmit}>
+                <h1 className="login-title">Bienvenue sur HabitLab</h1>
 
-            <form onSubmit={handleSubmit}>
-                <h2>Connexion</h2>
-
-                <span className="emailLogin">
-                    <label htmlFor="email">Mail</label>
+                <div className="login-field">
+                    <label htmlFor="email">E-mail</label>
                     <input
                         type="email"
                         name="email"
                         id="email"
-                        placeholder="Votre mail..."
                         value={formData.email}
                         onChange={handleChange}
                         required
                     />
-                </span>
+                </div>
 
-                <span className="pwdLogin">
+                <div className="login-field">
                     <label htmlFor="password">Mot de passe</label>
                     <input
                         type="password"
                         name="password"
                         id="password"
-                        placeholder="Votre mot de passe..."
                         value={formData.password}
                         onChange={handleChange}
                         required
                     />
-                </span>
+                </div>
 
-                {error && <p className="error">{error}</p>}
-                {success && <p className="success">{success}</p>}
+                {error && <p className="login-message login-message--error">{error}</p>}
+                {success && <p className="login-message login-message--success">{success}</p>}
 
-                <input className="submit" type="submit" value="Valider" />
+                <input className="login-submit" type="submit" value="Valider" />
+
+                <hr className="login-divider" />
+                <p className="login-switch">
+                    Pas encore de compte ?{" "}
+                    <button type="button" onClick={() => navigate("/register")}>
+                        S'inscrire
+                    </button>
+                </p>
             </form>
-
-            <button onClick={() => navigate("/register")}>S'inscrire</button>
-            <BtnAccueil />
         </div>
-    )
+    );
 }
