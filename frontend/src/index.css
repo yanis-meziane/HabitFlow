@@ -43,9 +43,11 @@ body {
 }
 
 .logo {
-  background: #d9d9d9;
-  padding: 1.5rem 2rem;
-  font-weight: 700;
+  display: block;
+  width: clamp(5rem, 12vw, 7rem);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  object-fit: cover;
 }
 
 .btn-connexion {

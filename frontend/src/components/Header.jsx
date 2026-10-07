@@ -1,10 +1,9 @@
-import { useNavigate } from "react-router-dom";
+import logo from "../../images/logo_HabitLab.png";
 
 export default function Header() {
-  const navigate = useNavigate();
   return (
     <header className="header">
-      <div className="logo">LOGO ?</div>
+      <img className="logo" src={logo} alt="Logo HabitLab" />
       <p>Aujourd’hui</p>
     </header>
   );
