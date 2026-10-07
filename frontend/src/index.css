@@ -61,6 +61,9 @@ body {
   cursor: pointer;
 }
 
+.btn-logout { background: #e8321e; transition: background 150ms ease; }
+.btn-logout:hover { background: #c42512; }
+
 .content {
   width: min(100% - 2.5rem, 72rem);
   margin: 0 auto;
@@ -134,8 +137,35 @@ body {
 .habits h1 span { color: #7cb73b; }
 .habits h2 { font-size: 1.1rem; margin: 0 0 2rem; }
 
+.navbar { display: flex; gap: 0.5rem; }
+.navbar a {
+  padding: 0.6rem 1.25rem; border-radius: 1.5rem; color: inherit;
+  font-weight: 700; text-decoration: none; transition: background 150ms ease;
+}
+.navbar a:hover { background: #e9f3dc; }
+.navbar a.active { background: #343632; color: #fff; }
+
+.progress { max-width: 52rem; margin-bottom: 2rem; }
+.progress-text { margin-bottom: 0.5rem; }
+.progress-bar { height: 0.75rem; border-radius: 1rem; background: #e0e3d9; overflow: hidden; }
+.progress-bar div { height: 100%; background: linear-gradient(90deg, #7cb73b, #14a89a); transition: width 300ms ease; }
+
+.streak { color: #e0752d; font-weight: 700; }
+
+.color-picker { border: 0; padding: 0; margin: 0; }
+.color-picker legend { padding: 0; margin-bottom: 0.5rem; }
+.color-picker div { display: flex; gap: 0.6rem; }
+.color-picker button {
+  width: 2.25rem; height: 2.25rem; border-radius: 50%; border: 3px solid #fff;
+  box-shadow: 0 0 0 1px #c9cdc2; cursor: pointer;
+}
+.color-picker button.selected { box-shadow: 0 0 0 3px #343632; }
+
 .habit-card {
-  background: #d9d9d9;
+  background: #fff;
+  border-left: 0.5rem solid var(--habit, #7cb73b);
+  border-radius: 0.75rem;
+  box-shadow: 0 0.5rem 1.5rem #2222220d;
   padding: 1.5rem;
   margin-bottom: 3rem;
   max-width: 52rem;
@@ -182,8 +212,12 @@ body {
   width: 4rem; height: 3.75rem; border-radius: 50%; border: 0;
   color: white; font-size: 1.5rem; cursor: pointer;
 }
-.day.done { background: #7cb73b; }
+.day { transition: transform 120ms ease; }
+.day:hover:not(:disabled) { transform: scale(1.08); }
+.day:disabled { opacity: 0.35; cursor: not-allowed; }
+.day.done { background: var(--habit, #7cb73b); }
 .day.missed { background: #bf8330; }
+.day.today { box-shadow: 0 0 0 3px #fff, 0 0 0 6px #343632; }
 
 .habit-form {
   display: grid;
